@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:charts_common/common.dart' as common
+import 'package:charts_common/common.dart'
+    as common
     show
         BaseChart,
         LayoutConfig,
@@ -69,20 +70,21 @@ abstract class BaseChart<D> extends StatefulWidget {
   /// Optional state that overrides internally kept state, such as selection.
   final UserManagedState<D>? userManagedState;
 
-  BaseChart(this.seriesList,
-      {bool? animate,
-      Duration? animationDuration,
-      this.defaultRenderer,
-      this.customSeriesRenderers,
-      this.behaviors,
-      this.selectionModels,
-      this.rtlSpec,
-      this.defaultInteractions = true,
-      this.layoutConfig,
-      this.userManagedState})
-      : this.animate = animate ?? true,
-        this.animationDuration =
-            animationDuration ?? const Duration(milliseconds: 300);
+  BaseChart(
+    this.seriesList, {
+    bool? animate,
+    Duration? animationDuration,
+    this.defaultRenderer,
+    this.customSeriesRenderers,
+    this.behaviors,
+    this.selectionModels,
+    this.rtlSpec,
+    this.defaultInteractions = true,
+    this.layoutConfig,
+    this.userManagedState,
+  }) : this.animate = animate ?? true,
+       this.animationDuration =
+           animationDuration ?? const Duration(milliseconds: 300);
 
   @override
   BaseChartState<D> createState() => new BaseChartState<D>();
@@ -91,8 +93,11 @@ abstract class BaseChart<D> extends StatefulWidget {
   common.BaseChart<D> createCommonChart(BaseChartState<D> chartState);
 
   /// Updates the [common.BaseChart].
-  void updateCommonChart(common.BaseChart<D> chart, BaseChart<D>? oldWidget,
-      BaseChartState<D> chartState) {
+  void updateCommonChart(
+    common.BaseChart<D> chart,
+    BaseChart<D>? oldWidget,
+    BaseChartState<D> chartState,
+  ) {
     common.Performance.time('chartsUpdateRenderers');
     // Set default renderer if one was provided.
     if (defaultRenderer != null &&
@@ -140,8 +145,8 @@ abstract class BaseChart<D> extends StatefulWidget {
       chartState.autoBehaviorWidgets.reversed
           .where(_notACustomBehavior)
           .forEach((ChartBehavior<D> behavior) {
-        behaviorList.insert(0, behavior);
-      });
+            behaviorList.insert(0, behavior);
+          });
     }
 
     // Remove any behaviors from the chart that are not in the incoming list.
@@ -178,22 +183,29 @@ abstract class BaseChart<D> extends StatefulWidget {
   /// Create the list of default interaction behaviors.
   void addDefaultInteractions(List<ChartBehavior> behaviors) {
     // Update selection model
-    behaviors.add(new SelectNearest<D>(
+    behaviors.add(
+      new SelectNearest<D>(
         eventTrigger: common.SelectionTrigger.tap,
         selectionModelType: common.SelectionModelType.info,
-        selectClosestSeries: true));
+        selectClosestSeries: true,
+      ),
+    );
   }
 
   bool _notACustomBehavior(ChartBehavior behavior) {
     return behaviors == null ||
         !behaviors!.any(
-            (ChartBehavior userBehavior) => userBehavior.role == behavior.role);
+          (ChartBehavior userBehavior) => userBehavior.role == behavior.role,
+        );
   }
 
   void _updateSelectionModel(
-      common.BaseChart<D> chart, BaseChartState<D> chartState) {
+    common.BaseChart<D> chart,
+    BaseChartState<D> chartState,
+  ) {
     final prevTypes = new List<common.SelectionModelType>.from(
-        chartState.addedSelectionChangedListenersByType.keys);
+      chartState.addedSelectionChangedListenersByType.keys,
+    );
 
     // Update any listeners for each type.
     selectionModels?.forEach((SelectionModelConfig<D> model) {
@@ -228,9 +240,11 @@ abstract class BaseChart<D> extends StatefulWidget {
     prevTypes.forEach((common.SelectionModelType type) {
       chart.getSelectionModel(type)
         ..removeSelectionChangedListener(
-            chartState.addedSelectionChangedListenersByType[type]!)
+          chartState.addedSelectionChangedListenersByType[type]!,
+        )
         ..removeSelectionUpdatedListener(
-            chartState.addedSelectionUpdatedListenersByType[type]!);
+          chartState.addedSelectionUpdatedListenersByType[type]!,
+        );
     });
   }
 
@@ -272,8 +286,9 @@ class LayoutConfig {
   });
 
   common.LayoutConfig get commonLayoutConfig => new common.LayoutConfig(
-      leftSpec: leftMarginSpec,
-      topSpec: topMarginSpec,
-      rightSpec: rightMarginSpec,
-      bottomSpec: bottomMarginSpec);
+    leftSpec: leftMarginSpec,
+    topSpec: topMarginSpec,
+    rightSpec: rightMarginSpec,
+    bottomSpec: bottomMarginSpec,
+  );
 }
